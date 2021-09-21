@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7202008219029365073}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Dirt Block Center
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 7959638638095925214}
   - component: {fileID: 3264007172176574808}
   - component: {fileID: 1570232652755487663}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}

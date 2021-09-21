@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4919101293065510693}
   - component: {fileID: 2598260564527698064}
   - component: {fileID: 8895149650738347910}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5236078868935419280}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Grass Block
   m_TagString: Untagged
   m_Icon: {fileID: 0}
