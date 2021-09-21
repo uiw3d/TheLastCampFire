@@ -79,6 +79,7 @@ MonoBehaviour:
   WalkingSpeed: 5
   GroundCheck: {fileID: 2909718018552917797}
   GroundCheckRadius: 0.1
+  rotationSpeed: 20
   GroundLayerMask:
     serializedVersion: 2
     m_Bits: 64
