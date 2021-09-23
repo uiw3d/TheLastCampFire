@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
     [SerializeField] Transform GroundCheck;
     [SerializeField] float GroundCheckRadius = 0.1f;
     [SerializeField] float rotationSpeed = 5f;
+    [SerializeField] float EdgeCheckTracingDistance = 0.8f;
+    [SerializeField] float EdgeCheckTracingDepth= 1f;
     [SerializeField] LayerMask GroundLayerMask;
     InputActions inputActions;
     Vector2 MoveInput;
@@ -57,6 +59,26 @@ public class Player : MonoBehaviour
         Velocity.x = GetPlayerDesiredMoveDir().x * WalkingSpeed;
         Velocity.z = GetPlayerDesiredMoveDir().z * WalkingSpeed;
         Velocity.y += Gravity * Time.deltaTime;
+
+
+        Vector3 PosXTracePos = transform.position + new Vector3(EdgeCheckTracingDistance, 0.5f, 0f);
+        Vector3 NegXTracePos = transform.position + new Vector3(-EdgeCheckTracingDistance, 0.5f, 0f);
+        Vector3 PosZTracePos = transform.position + new Vector3(0f, 0.5f, EdgeCheckTracingDistance);
+        Vector3 NegZTracePos = transform.position + new Vector3(0f, 0.5f, -EdgeCheckTracingDistance);
+
+        bool CanGoPosX = Physics.Raycast(PosXTracePos, Vector3.down, EdgeCheckTracingDepth, GroundLayerMask);
+        bool CanGoNegX = Physics.Raycast(NegXTracePos, Vector3.down, EdgeCheckTracingDepth, GroundLayerMask);
+        bool CanGoPosZ = Physics.Raycast(PosZTracePos, Vector3.down, EdgeCheckTracingDepth, GroundLayerMask);
+        bool CanGoNegZ = Physics.Raycast(NegZTracePos, Vector3.down, EdgeCheckTracingDepth, GroundLayerMask);
+
+        float xMin = CanGoNegX ? float.MinValue : 0f;
+        float xMax = CanGoPosX ? float.MaxValue : 0f;
+        float zMin = CanGoNegZ ? float.MinValue : 0f;
+        float zMax = CanGoPosZ ? float.MaxValue : 0f;
+
+        Velocity.x = Mathf.Clamp(Velocity.x, xMin,xMax);
+        Velocity.z = Mathf.Clamp(Velocity.z, zMin,zMax);
+
         characterController.Move(Velocity * Time.deltaTime);
         UpdateRotation();
     }
