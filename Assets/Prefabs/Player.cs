@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
         if(ladderExit == CurrentClimbingLadder)
         {
             CurrentClimbingLadder = null;
+            Velocity.y = 0;
         }
         LaddersNearby.Remove(ladderExit);
     }
@@ -102,12 +103,52 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(CurrentClimbingLadder==null)
+        if (CurrentClimbingLadder == null)
         {
             HopOnLadder(FindPlayerClimbingLadder());
         }
+        if (CurrentClimbingLadder)
+        {
+            CalculateClimbingVelocity();
+        }
+        else
+        { 
+            CaculateWalkingVelocity();
+        }
 
-        if(IsOnGround())
+        characterController.Move(Velocity * Time.deltaTime);
+        UpdateRotation();
+    }
+
+    void CalculateClimbingVelocity()
+    {
+        if(MoveInput.magnitude == 0)
+        {
+            Velocity = Vector3.zero;
+        }
+
+        Vector3 LadderDir = CurrentClimbingLadder.transform.forward;
+        Vector3 PlayerDesiredMoveDir = GetPlayerDesiredMoveDir();
+
+        float Dot = Vector3.Dot(LadderDir, PlayerDesiredMoveDir);
+
+        if(Dot < 0)
+        {
+            Velocity = GetPlayerDesiredMoveDir() * WalkingSpeed;
+            Velocity.y = WalkingSpeed;
+        }else
+        {
+            if(IsOnGround())
+            {
+                Velocity = GetPlayerDesiredMoveDir() * WalkingSpeed;
+            }
+            Velocity.y = -WalkingSpeed;
+        }
+    }
+
+    private void CaculateWalkingVelocity()
+    {
+        if (IsOnGround())
         {
             Velocity.y = -0.2f;
         }
@@ -132,11 +173,8 @@ public class Player : MonoBehaviour
         float zMin = CanGoNegZ ? float.MinValue : 0f;
         float zMax = CanGoPosZ ? float.MaxValue : 0f;
 
-        Velocity.x = Mathf.Clamp(Velocity.x, xMin,xMax);
-        Velocity.z = Mathf.Clamp(Velocity.z, zMin,zMax);
-
-        characterController.Move(Velocity * Time.deltaTime);
-        UpdateRotation();
+        Velocity.x = Mathf.Clamp(Velocity.x, xMin, xMax);
+        Velocity.z = Mathf.Clamp(Velocity.z, zMin, zMax);
     }
 
     Vector3 GetPlayerDesiredMoveDir()
@@ -146,11 +184,16 @@ public class Player : MonoBehaviour
 
     void UpdateRotation()
     {
+        if (CurrentClimbingLadder != null)
+        {
+            return;
+        }
         Vector3 PlayerDesiredDir = GetPlayerDesiredMoveDir();
         if(PlayerDesiredDir.magnitude == 0)
         {
             PlayerDesiredDir = transform.forward;
         }
+        
         Quaternion DesiredRotation = Quaternion.LookRotation(PlayerDesiredDir, Vector3.up);
         transform.rotation = Quaternion.Lerp(transform.rotation, DesiredRotation, Time.deltaTime * rotationSpeed);
     }
