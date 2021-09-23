@@ -86,17 +86,25 @@ public class Player : MonoBehaviour
         MoveInput = ctx.ReadValue<Vector2>();
     }
 
+    void HopOnLadder(Ladder ladderToHopOn)
+    {
+        if (ladderToHopOn == null) return;
+
+        if(ladderToHopOn != CurrentClimbingLadder)
+        {
+            Transform snapToTransform = ladderToHopOn.GetClosestSnapTransform(transform.position);
+            characterController.Move(snapToTransform.position - transform.position);
+            transform.rotation = snapToTransform.rotation;
+            CurrentClimbingLadder = ladderToHopOn;
+            Debug.Log("Hopped on ladder");
+        }
+    }
     // Update is called once per frame
     void Update()
     {
         if(CurrentClimbingLadder==null)
         {
-            CurrentClimbingLadder = FindPlayerClimbingLadder();
-        }
-
-        if(CurrentClimbingLadder!=null)
-        {
-            Debug.Log($"player want to climb {CurrentClimbingLadder}");
+            HopOnLadder(FindPlayerClimbingLadder());
         }
 
         if(IsOnGround())
