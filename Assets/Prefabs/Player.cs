@@ -10,12 +10,50 @@ public class Player : MonoBehaviour
     [SerializeField] float rotationSpeed = 5f;
     [SerializeField] float EdgeCheckTracingDistance = 0.8f;
     [SerializeField] float EdgeCheckTracingDepth= 1f;
+    [SerializeField] float LadderClimbCommitAngleDegrees = 20f;
     [SerializeField] LayerMask GroundLayerMask;
     InputActions inputActions;
     Vector2 MoveInput;
     Vector3 Velocity;
     float Gravity = -9.8f;
     CharacterController characterController;
+    Ladder CurrentClimbingLadder;
+    List<Ladder> LaddersNearby = new List<Ladder>();
+
+    public void NotifyLadderNearby(Ladder ladderNearby)
+    {
+        LaddersNearby.Add(ladderNearby);
+    }
+
+    public void NotifyLadderExit(Ladder ladderExit)
+    {
+        if(ladderExit == CurrentClimbingLadder)
+        {
+            CurrentClimbingLadder = null;
+        }
+        LaddersNearby.Remove(ladderExit);
+    }
+
+    Ladder FindPlayerClimbingLadder()
+    {
+        Vector3 PlayerDesiredMoveDir = GetPlayerDesiredMoveDir();
+        Ladder ChosenLadder = null;
+        float CloestAngle = 180.0f;
+        foreach(Ladder ladder in LaddersNearby)
+        {
+            Vector3 LadderDir = ladder.transform.position - transform.position;
+            LadderDir.y = 0;
+            LadderDir.Normalize();
+            float Dot = Vector3.Dot(PlayerDesiredMoveDir, LadderDir);
+            float AngleDegrees = Mathf.Acos(Dot) * Mathf.Rad2Deg;
+            if(AngleDegrees < LadderClimbCommitAngleDegrees && AngleDegrees < CloestAngle)
+            {
+                ChosenLadder = ladder;
+                CloestAngle = AngleDegrees;
+            }
+        }
+        return ChosenLadder;
+    }
 
     bool IsOnGround()
     {
@@ -51,6 +89,16 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(CurrentClimbingLadder==null)
+        {
+            CurrentClimbingLadder = FindPlayerClimbingLadder();
+        }
+
+        if(CurrentClimbingLadder!=null)
+        {
+            Debug.Log($"player want to climb {CurrentClimbingLadder}");
+        }
+
         if(IsOnGround())
         {
             Velocity.y = -0.2f;
