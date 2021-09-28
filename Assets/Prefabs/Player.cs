@@ -79,7 +79,16 @@ public class Player : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         inputActions.Gameplay.Move.performed += MoveInputUpdated;
         inputActions.Gameplay.Move.canceled += MoveInputUpdated;
-       
+        inputActions.Gameplay.Interact.performed += Interact;
+    }
+
+    void Interact(InputAction.CallbackContext ctx)
+    {
+        InteractComponent interactComp = GetComponentInChildren<InteractComponent>();
+        if(interactComp!=null)
+        {
+            interactComp.Interact();
+        }
     }
 
     void MoveInputUpdated(InputAction.CallbackContext ctx)
@@ -94,12 +103,34 @@ public class Player : MonoBehaviour
         if(ladderToHopOn != CurrentClimbingLadder)
         {
             Transform snapToTransform = ladderToHopOn.GetClosestSnapTransform(transform.position);
-            characterController.Move(snapToTransform.position - transform.position);
-            transform.rotation = snapToTransform.rotation;
             CurrentClimbingLadder = ladderToHopOn;
+            StartCoroutine(MoveToTransform(snapToTransform, 0.2f));
             Debug.Log("Hopped on ladder");
         }
     }
+    IEnumerator MoveToTransform(Transform Destination, float transformTime)
+    {
+        inputActions.Gameplay.Move.Disable();
+
+        Vector3 StartPos = transform.position;
+        Vector3 EndPos = Destination.position;
+        Quaternion StartRot = transform.rotation;
+        Quaternion EndRot = Destination.rotation;
+
+        float timmer = 0f;
+        while(timmer < transformTime)
+        {
+            timmer += Time.deltaTime;
+            Vector3 DeltaMove = Vector3.Lerp(StartPos, EndPos, timmer/transformTime) - transform.position;
+            characterController.Move(DeltaMove);
+            transform.rotation = Quaternion.Lerp(StartRot,EndRot,timmer/transformTime);
+            yield return new WaitForEndOfFrame();
+        }
+
+        inputActions.Gameplay.Move.Enable();
+    }
+   
+
     // Update is called once per frame
     void Update()
     {
@@ -125,6 +156,7 @@ public class Player : MonoBehaviour
         if(MoveInput.magnitude == 0)
         {
             Velocity = Vector3.zero;
+            return;
         }
 
         Vector3 LadderDir = CurrentClimbingLadder.transform.forward;
@@ -132,6 +164,7 @@ public class Player : MonoBehaviour
 
         float Dot = Vector3.Dot(LadderDir, PlayerDesiredMoveDir);
 
+        Velocity = Vector3.zero;
         if(Dot < 0)
         {
             Velocity = GetPlayerDesiredMoveDir() * WalkingSpeed;
