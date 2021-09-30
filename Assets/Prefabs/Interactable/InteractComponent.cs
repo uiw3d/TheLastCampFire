@@ -22,7 +22,6 @@ public class InteractComponent : MonoBehaviour
         Interactable otherAsInteractable = other.GetComponent<Interactable>();
         if(otherAsInteractable != null)
         {
-            Debug.Log("Find Interacable");
             if (!interactables.Contains(otherAsInteractable))
             { 
                 interactables.Add(otherAsInteractable);
@@ -48,7 +47,7 @@ public class InteractComponent : MonoBehaviour
         Interactable closestInteracable = GetClosestInteractable();
         if(closestInteracable!=null)
         {
-            closestInteracable.Interact();
+            closestInteracable.Interact(transform.parent.gameObject);
         }
     }
 

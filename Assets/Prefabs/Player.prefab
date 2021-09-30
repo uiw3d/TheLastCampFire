@@ -30,6 +30,36 @@ Transform:
   m_Father: {fileID: 1455786853854108659}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4331441257593611967
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 321231907000164991}
+  m_Layer: 0
+  m_Name: PickUpLoc
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &321231907000164991
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4331441257593611967}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 0.313, z: 0.652}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1455786853854108659}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4381125540683023674
 GameObject:
   m_ObjectHideFlags: 0
@@ -62,6 +92,7 @@ Transform:
   - {fileID: 357693100718611407}
   - {fileID: 2909718018552917797}
   - {fileID: 859025048381591563}
+  - {fileID: 321231907000164991}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -87,6 +118,7 @@ MonoBehaviour:
   GroundLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  PickuipSocketTransform: {fileID: 321231907000164991}
 --- !u!143 &-8146011166100592970
 CharacterController:
   m_ObjectHideFlags: 0

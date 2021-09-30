@@ -91,7 +91,7 @@ public class Sign : Interactable
         
     }
 
-    public override void Interact()
+    public override void Interact(GameObject InteractingGameObject = null)
     {
         GoToNextDialog();
     }

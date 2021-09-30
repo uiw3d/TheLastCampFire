@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     [SerializeField] float EdgeCheckTracingDepth= 1f;
     [SerializeField] float LadderClimbCommitAngleDegrees = 20f;
     [SerializeField] LayerMask GroundLayerMask;
+    [SerializeField] Transform PickuipSocketTransform;
     InputActions inputActions;
     Vector2 MoveInput;
     Vector3 Velocity;
@@ -19,7 +20,10 @@ public class Player : MonoBehaviour
     CharacterController characterController;
     Ladder CurrentClimbingLadder;
     List<Ladder> LaddersNearby = new List<Ladder>();
-
+    public Transform GetPickupSocketTransform()
+    {
+        return PickuipSocketTransform;
+    }
     public void NotifyLadderNearby(Ladder ladderNearby)
     {
         LaddersNearby.Add(ladderNearby);
