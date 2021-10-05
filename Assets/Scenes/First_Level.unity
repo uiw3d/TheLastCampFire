@@ -2558,11 +2558,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6561489252941045614, guid: 7dedb24e034cfb04f9b6f8d66b655234, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 2147483647
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7852185837923733748, guid: 7dedb24e034cfb04f9b6f8d66b655234, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 2147483647
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7dedb24e034cfb04f9b6f8d66b655234, type: 3}
@@ -30114,7 +30114,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7786301, y: 1}
+    m_SensorSize: {x: 1.7757926, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16

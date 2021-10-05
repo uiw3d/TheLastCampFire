@@ -20,6 +20,13 @@ public class Player : MonoBehaviour
     CharacterController characterController;
     Ladder CurrentClimbingLadder;
     List<Ladder> LaddersNearby = new List<Ladder>();
+
+    Transform currentFloor;
+    Vector3 PreviousWorldPos;
+    Vector3 PreviousFloorLocalPos;
+    Quaternion PreviousWorldRot;
+    Quaternion PreviousFloorLocalRot;
+
     public Transform GetPickupSocketTransform()
     {
         return PickuipSocketTransform;
@@ -58,6 +65,32 @@ public class Player : MonoBehaviour
             }
         }
         return ChosenLadder;
+    }
+
+    void CheckFloor()
+    {
+        Collider[] cols = Physics.OverlapSphere(GroundCheck.position, GroundCheckRadius, GroundLayerMask);
+        if(cols.Length != 0)
+        {
+            if(currentFloor != cols[0].transform)
+            {
+                currentFloor = cols[0].transform;
+                SnapShotPostionAndRotation();
+            }
+        }
+    }
+
+    void SnapShotPostionAndRotation()
+    {
+        PreviousWorldPos = transform.position;
+        PreviousWorldRot = transform.rotation;
+        if(currentFloor!=null)
+        {
+            PreviousFloorLocalPos = currentFloor.InverseTransformPoint(transform.position);
+            PreviousFloorLocalRot = Quaternion.Inverse(currentFloor.rotation) * transform.rotation;
+            //to add 2 rotation you do QuaternionA * QuaternionB
+            //to subtract you do Quaternion.Inverse(QuaternionA) * QuaternionB
+        }
     }
 
     bool IsOnGround()
@@ -151,8 +184,25 @@ public class Player : MonoBehaviour
             CaculateWalkingVelocity();
         }
 
+        CheckFloor();
+        FollowFloor();
         characterController.Move(Velocity * Time.deltaTime);
         UpdateRotation();
+
+        SnapShotPostionAndRotation();
+    }
+
+    void FollowFloor()
+    {
+        if(currentFloor)
+        {
+            Vector3 DeltaMove = currentFloor.TransformPoint(PreviousFloorLocalPos) - PreviousWorldPos;
+            Velocity += DeltaMove / Time.deltaTime;
+
+            Quaternion DestinationRot = currentFloor.rotation * PreviousFloorLocalRot;
+            Quaternion DeltaRot = Quaternion.Inverse(PreviousWorldRot) * DestinationRot;
+            transform.rotation = transform.rotation * DeltaRot;
+        }
     }
 
     void CalculateClimbingVelocity()
