@@ -10,7 +10,19 @@ public class Platform : MonoBehaviour
     public Transform StartTrans;
     public Transform EndTrans;
 
+    
     Coroutine MovingCoroutine;
+    
+    public void MoveTo(bool ToEnd)
+    {
+        if(ToEnd)
+        {
+            MoveTo(EndTrans);
+        }else
+        {
+            MoveTo(StartTrans);
+        }
+    }
     // Start is called before the first frame update
     public void MoveTo(Transform Destination)
     {
