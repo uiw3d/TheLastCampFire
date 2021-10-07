@@ -71,6 +71,7 @@ GameObject:
   - component: {fileID: 1455786853854108659}
   - component: {fileID: 4062383929264110863}
   - component: {fileID: -8146011166100592970}
+  - component: {fileID: 6257761832857873065}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -108,16 +109,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a8bd883621f6564b8fa5ab02ab29546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WalkingSpeed: 5
-  GroundCheck: {fileID: 2909718018552917797}
-  GroundCheckRadius: 0.1
-  rotationSpeed: 20
-  EdgeCheckTracingDistance: 0.2
-  EdgeCheckTracingDepth: 1
   LadderClimbCommitAngleDegrees: 20
-  GroundLayerMask:
-    serializedVersion: 2
-    m_Bits: 64
+  LadderHopOnTime: 0.2
   PickuipSocketTransform: {fileID: 321231907000164991}
 --- !u!143 &-8146011166100592970
 CharacterController:
@@ -137,6 +130,27 @@ CharacterController:
   m_SkinWidth: 0.01
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.43, z: 0}
+--- !u!114 &6257761832857873065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4381125540683023674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c870080d9b65fc4ba7fa72422160f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WalkingSpeed: 5
+  rotationSpeed: 5
+  EdgeCheckTracingDistance: 0.2
+  EdgeCheckTracingDepth: 1.5
+  GroundCheck: {fileID: 2909718018552917797}
+  GroundCheckRadius: 0.1
+  GroundLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1001 &357693100718997847
 PrefabInstance:
   m_ObjectHideFlags: 0

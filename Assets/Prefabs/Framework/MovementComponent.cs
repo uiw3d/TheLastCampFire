@@ -1,90 +1,68 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-public class Player : MonoBehaviour
+
+public class MovementComponent : MonoBehaviour
 {
+    [Header("Walking")]
     [SerializeField] float WalkingSpeed = 5f;
-    [SerializeField] Transform GroundCheck;
-    [SerializeField] float GroundCheckRadius = 0.1f;
     [SerializeField] float rotationSpeed = 5f;
     [SerializeField] float EdgeCheckTracingDistance = 0.8f;
-    [SerializeField] float EdgeCheckTracingDepth= 1f;
-    [SerializeField] float LadderClimbCommitAngleDegrees = 20f;
+    [SerializeField] float EdgeCheckTracingDepth = 1f;
+    
+    [Header("Ground Check")]
+    [SerializeField] Transform GroundCheck;
+    [SerializeField] float GroundCheckRadius = 0.1f;
     [SerializeField] LayerMask GroundLayerMask;
-    [SerializeField] Transform PickuipSocketTransform;
-    InputActions inputActions;
+
+    bool isClimbing;
+    Vector3 LadderDir;
     Vector2 MoveInput;
     Vector3 Velocity;
     float Gravity = -9.8f;
     CharacterController characterController;
-    Ladder CurrentClimbingLadder;
-    List<Ladder> LaddersNearby = new List<Ladder>();
 
     Transform currentFloor;
     Vector3 PreviousWorldPos;
     Vector3 PreviousFloorLocalPos;
     Quaternion PreviousWorldRot;
     Quaternion PreviousFloorLocalRot;
-
-    public Transform GetPickupSocketTransform()
+    public void SetMovementInput(Vector2 inputVal)
     {
-        return PickuipSocketTransform;
+        MoveInput = inputVal;
     }
-    public void NotifyLadderNearby(Ladder ladderNearby)
+    public void ClearVerticalVelocity()
     {
-        LaddersNearby.Add(ladderNearby);
+        Velocity.y = 0;
     }
-
-    public void NotifyLadderExit(Ladder ladderExit)
+    public void SetClimbingInfo(Vector3 ladderDir, bool climbing)
     {
-        if(ladderExit == CurrentClimbingLadder)
-        {
-            CurrentClimbingLadder = null;
-            Velocity.y = 0;
-        }
-        LaddersNearby.Remove(ladderExit);
+        LadderDir = ladderDir;
+        isClimbing = climbing;
     }
 
-    Ladder FindPlayerClimbingLadder()
+    private void Start()
     {
-        Vector3 PlayerDesiredMoveDir = GetPlayerDesiredMoveDir();
-        Ladder ChosenLadder = null;
-        float CloestAngle = 180.0f;
-        foreach(Ladder ladder in LaddersNearby)
-        {
-            Vector3 LadderDir = ladder.transform.position - transform.position;
-            LadderDir.y = 0;
-            LadderDir.Normalize();
-            float Dot = Vector3.Dot(PlayerDesiredMoveDir, LadderDir);
-            float AngleDegrees = Mathf.Acos(Dot) * Mathf.Rad2Deg;
-            if(AngleDegrees < LadderClimbCommitAngleDegrees && AngleDegrees < CloestAngle)
-            {
-                ChosenLadder = ladder;
-                CloestAngle = AngleDegrees;
-            }
-        }
-        return ChosenLadder;
+        characterController = GetComponent<CharacterController>();
     }
 
     void CheckFloor()
     {
         Collider[] cols = Physics.OverlapSphere(GroundCheck.position, GroundCheckRadius, GroundLayerMask);
-        if(cols.Length != 0)
+        if (cols.Length != 0)
         {
-            if(currentFloor != cols[0].transform)
+            if (currentFloor != cols[0].transform)
             {
                 currentFloor = cols[0].transform;
                 SnapShotPostionAndRotation();
             }
         }
     }
-
     void SnapShotPostionAndRotation()
     {
         PreviousWorldPos = transform.position;
         PreviousWorldRot = transform.rotation;
-        if(currentFloor!=null)
+        if (currentFloor != null)
         {
             PreviousFloorLocalPos = currentFloor.InverseTransformPoint(transform.position);
             PreviousFloorLocalRot = Quaternion.Inverse(currentFloor.rotation) * transform.rotation;
@@ -98,89 +76,44 @@ public class Player : MonoBehaviour
         return Physics.CheckSphere(GroundCheck.position, GroundCheckRadius, GroundLayerMask);
     }
 
-    private void Awake()
+    public IEnumerator MoveToTransform(Transform Destination, float transformTime)
     {
-        inputActions = new InputActions(); 
-    }
-    private void OnEnable()
-    {
-        inputActions.Enable();
-    }
-    private void OnDisable()
-    {
-        inputActions.Disable();
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        characterController = GetComponent<CharacterController>();
-        inputActions.Gameplay.Move.performed += MoveInputUpdated;
-        inputActions.Gameplay.Move.canceled += MoveInputUpdated;
-        inputActions.Gameplay.Interact.performed += Interact;
-    }
-
-    void Interact(InputAction.CallbackContext ctx)
-    {
-        InteractComponent interactComp = GetComponentInChildren<InteractComponent>();
-        if(interactComp!=null)
-        {
-            interactComp.Interact();
-        }
-    }
-
-    void MoveInputUpdated(InputAction.CallbackContext ctx)
-    {
-        MoveInput = ctx.ReadValue<Vector2>();
-    }
-
-    void HopOnLadder(Ladder ladderToHopOn)
-    {
-        if (ladderToHopOn == null) return;
-
-        if(ladderToHopOn != CurrentClimbingLadder)
-        {
-            Transform snapToTransform = ladderToHopOn.GetClosestSnapTransform(transform.position);
-            CurrentClimbingLadder = ladderToHopOn;
-            StartCoroutine(MoveToTransform(snapToTransform, 0.2f));
-            Debug.Log("Hopped on ladder");
-        }
-    }
-    IEnumerator MoveToTransform(Transform Destination, float transformTime)
-    {
-        inputActions.Gameplay.Move.Disable();
-
         Vector3 StartPos = transform.position;
         Vector3 EndPos = Destination.position;
         Quaternion StartRot = transform.rotation;
         Quaternion EndRot = Destination.rotation;
 
         float timmer = 0f;
-        while(timmer < transformTime)
+        while (timmer < transformTime)
         {
             timmer += Time.deltaTime;
-            Vector3 DeltaMove = Vector3.Lerp(StartPos, EndPos, timmer/transformTime) - transform.position;
+            Vector3 DeltaMove = Vector3.Lerp(StartPos, EndPos, timmer / transformTime) - transform.position;
             characterController.Move(DeltaMove);
-            transform.rotation = Quaternion.Lerp(StartRot,EndRot,timmer/transformTime);
+            transform.rotation = Quaternion.Lerp(StartRot, EndRot, timmer / transformTime);
             yield return new WaitForEndOfFrame();
         }
-
-        inputActions.Gameplay.Move.Enable();
     }
-   
-
-    // Update is called once per frame
-    void Update()
+    void FollowFloor()
     {
-        if (CurrentClimbingLadder == null)
+        if (currentFloor)
         {
-            HopOnLadder(FindPlayerClimbingLadder());
+            Vector3 DeltaMove = currentFloor.TransformPoint(PreviousFloorLocalPos) - PreviousWorldPos;
+            Velocity += DeltaMove / Time.deltaTime;
+
+            Quaternion DestinationRot = currentFloor.rotation * PreviousFloorLocalRot;
+            Quaternion DeltaRot = Quaternion.Inverse(PreviousWorldRot) * DestinationRot;
+            transform.rotation = transform.rotation * DeltaRot;
         }
-        if (CurrentClimbingLadder)
+    }
+
+    private void Update()
+    {
+        if (isClimbing)
         {
             CalculateClimbingVelocity();
         }
         else
-        { 
+        {
             CaculateWalkingVelocity();
         }
 
@@ -192,40 +125,27 @@ public class Player : MonoBehaviour
         SnapShotPostionAndRotation();
     }
 
-    void FollowFloor()
-    {
-        if(currentFloor)
-        {
-            Vector3 DeltaMove = currentFloor.TransformPoint(PreviousFloorLocalPos) - PreviousWorldPos;
-            Velocity += DeltaMove / Time.deltaTime;
-
-            Quaternion DestinationRot = currentFloor.rotation * PreviousFloorLocalRot;
-            Quaternion DeltaRot = Quaternion.Inverse(PreviousWorldRot) * DestinationRot;
-            transform.rotation = transform.rotation * DeltaRot;
-        }
-    }
-
     void CalculateClimbingVelocity()
     {
-        if(MoveInput.magnitude == 0)
+        if (MoveInput.magnitude == 0)
         {
             Velocity = Vector3.zero;
             return;
         }
 
-        Vector3 LadderDir = CurrentClimbingLadder.transform.forward;
         Vector3 PlayerDesiredMoveDir = GetPlayerDesiredMoveDir();
 
         float Dot = Vector3.Dot(LadderDir, PlayerDesiredMoveDir);
 
         Velocity = Vector3.zero;
-        if(Dot < 0)
+        if (Dot < 0)
         {
             Velocity = GetPlayerDesiredMoveDir() * WalkingSpeed;
             Velocity.y = WalkingSpeed;
-        }else
+        }
+        else
         {
-            if(IsOnGround())
+            if (IsOnGround())
             {
                 Velocity = GetPlayerDesiredMoveDir() * WalkingSpeed;
             }
@@ -264,23 +184,23 @@ public class Player : MonoBehaviour
         Velocity.z = Mathf.Clamp(Velocity.z, zMin, zMax);
     }
 
-    Vector3 GetPlayerDesiredMoveDir()
+    public Vector3 GetPlayerDesiredMoveDir()
     {
         return new Vector3(-MoveInput.y, 0f, MoveInput.x).normalized;
     }
 
     void UpdateRotation()
     {
-        if (CurrentClimbingLadder != null)
+        if (isClimbing)
         {
             return;
         }
         Vector3 PlayerDesiredDir = GetPlayerDesiredMoveDir();
-        if(PlayerDesiredDir.magnitude == 0)
+        if (PlayerDesiredDir.magnitude == 0)
         {
             PlayerDesiredDir = transform.forward;
         }
-        
+
         Quaternion DesiredRotation = Quaternion.LookRotation(PlayerDesiredDir, Vector3.up);
         transform.rotation = Quaternion.Lerp(transform.rotation, DesiredRotation, Time.deltaTime * rotationSpeed);
     }

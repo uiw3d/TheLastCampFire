@@ -7036,7 +7036,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2637098239374054241, guid: 4a35f2b4e57234f47bea73f41b5122bf, type: 3}
   m_PrefabInstance: {fileID: 390608571}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2144656547}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: acd082ae47a2a1d41a74c215377097bb, type: 3}
@@ -14060,7 +14060,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2637098239374054241, guid: 4a35f2b4e57234f47bea73f41b5122bf, type: 3}
   m_PrefabInstance: {fileID: 1531281607}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 824397059}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: acd082ae47a2a1d41a74c215377097bb, type: 3}
@@ -17906,6 +17906,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 5236078868935419280, guid: fc3606814b105d944aebbeed94d35dc4, type: 3}
   m_PrefabInstance: {fileID: 824015308}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &824397059 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1515769401080723892, guid: 4a35f2b4e57234f47bea73f41b5122bf, type: 3}
+  m_PrefabInstance: {fileID: 1531281607}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &828720165
 PrefabInstance:
@@ -30320,7 +30325,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7757926, y: 1}
+    m_SensorSize: {x: 1.7773699, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -30642,6 +30647,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -7206845186364457193, guid: 1cf32d3fd7f169241ab08afd9a712592, type: 3}
+      propertyPath: TogglingObject
+      value: 
+      objectReference: {fileID: 824397059}
     - target: {fileID: -7206845186364457193, guid: 1cf32d3fd7f169241ab08afd9a712592, type: 3}
       propertyPath: platformToMove
       value: 
@@ -34404,6 +34413,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7202008219029365073, guid: 60ee61b107ddee04ebe6b3afab332f46, type: 3}
   m_PrefabInstance: {fileID: 1617973208}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1618725470 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4381125540683023674, guid: 18250aeff7518904ebfbff2e254e2ad9, type: 3}
+  m_PrefabInstance: {fileID: 2097606324}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1618725471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1618725470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96eb3cad34dd80f488e84c71453cee0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LadderClimbCommitAngleDegrees: 20
+  LadderHopOnTime: 0.2
 --- !u!1001 &1622425606
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35727,6 +35755,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -7206845186364457193, guid: 1cf32d3fd7f169241ab08afd9a712592, type: 3}
+      propertyPath: TogglingObject
+      value: 
+      objectReference: {fileID: 2144656547}
     - target: {fileID: -7206845186364457193, guid: 1cf32d3fd7f169241ab08afd9a712592, type: 3}
       propertyPath: platformToMove
       value: 
@@ -44344,4 +44376,9 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 7202008219029365073, guid: 60ee61b107ddee04ebe6b3afab332f46, type: 3}
   m_PrefabInstance: {fileID: 2142928833}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2144656547 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1515769401080723892, guid: 4a35f2b4e57234f47bea73f41b5122bf, type: 3}
+  m_PrefabInstance: {fileID: 390608571}
   m_PrefabAsset: {fileID: 0}

@@ -20,19 +20,19 @@ public class Ladder : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Player otherAsPlayer = other.GetComponent<Player>();
-        if(otherAsPlayer!=null)
+        LadderCimbingComponent otherClimbingComp = other.GetComponent<LadderCimbingComponent>();
+        if(otherClimbingComp != null)
         {
-            otherAsPlayer.NotifyLadderNearby(this);
+            otherClimbingComp.NotifyLadderNearby(this);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        Player otherAsPlayer = other.GetComponent<Player>();
-        if (otherAsPlayer != null)
+        LadderCimbingComponent otherClimbingComp = other.GetComponent<LadderCimbingComponent>();
+        if (otherClimbingComp != null)
         {
-            otherAsPlayer.NotifyLadderExit(this);
+            otherClimbingComp.NotifyLadderExit(this);
         }
     }
 
